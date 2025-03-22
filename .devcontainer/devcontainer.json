@@ -1,0 +1,44 @@
+{
+    // Metadata name for the devcontainer
+    "name": "NodeJS devcontainer",
+
+    // Build context specification, in this case using Dockerfile
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "web",
+
+    "workspaceFolder": "/app",
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/app,type=bind"
+    ],
+
+    // Build context specification, in this case using Dockerfile
+    // "build": {
+    //     "dockerfile": "../Dockerfile",
+    //     "context": ".."
+    //     // "target": "" // Dockerfile target for development environment
+    // },
+
+
+    // IDE specific customizations
+    "onCreateCommand": "go install -v github.com/go-delve/delve/cmd/dlv@latest",
+
+    // IDE specific customizations
+    "customizations": {
+        "vscode": {
+            // list of goto extensions installed for seamless IDE experience
+            "extensions": [
+                "golang.go",
+                "ms-azuretools.vscode-docker"
+            ]
+        }
+    },
+
+    // To enable port forwarding from within devcontainer to host
+    // "appPort": ["host_port:container_port"],
+
+    // To enable starting node at start (the below command uses script named start in package.json file)
+    "postStartCommand": "/bin/bash"
+
+    // Uncomment the following line to use another user instead of asura within the devcontainer (such as root)
+    // ,"remoteUser": "root"
+}
