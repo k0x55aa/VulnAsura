@@ -27,6 +27,7 @@ func RegisterAuthRoutes(r *gin.Engine, db *gorm.DB) {
 		}
 
 		user, err := RegisterUser(db, input.Username, input.Password)
+		fmt.Println(err)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register user"})
 			return
@@ -50,6 +51,7 @@ func RegisterAuthRoutes(r *gin.Engine, db *gorm.DB) {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
+		c.Header("Authorization", token)
 
 		c.JSON(http.StatusOK, gin.H{"message": "Login successful", "token": token, "user": user})
 	})
