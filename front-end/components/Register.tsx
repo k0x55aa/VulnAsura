@@ -1,29 +1,23 @@
 'use client'; // Marking this as a client-side component
 
-import React, { useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LoginComponent from './LoginComponent';
 
 interface FormData {
   username: string;
   password: string;
 }
 
-const LoginContainer: React.FC = () => {
+const Register: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     username: '',
     password: ''
   });
-  
+
   const [error, setError] = useState<string>('');  // State for errors
   const [loading, setLoading] = useState<boolean>(false);  // State for loading spinner or UI feedback
   const navigate = useNavigate(); // Hook for navigation (React Router v6+)
-  useEffect(() => {
-    // If a user is already logged in, redirect them to the dashboard
-    if (localStorage.getItem('authToken')) {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
+
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,8 +43,8 @@ const LoginContainer: React.FC = () => {
     }
 
     try {
-      // Send POST request to the backend for login
-      const response = await fetch('http://127.0.0.1:8080/auth/login', {  // Adjust the URL to your API endpoint
+      // Send POST request to the backend for registration
+      const response = await fetch('http://127.0.0.1:8080/auth/register', {  // Adjust the URL to your API endpoint
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -61,19 +55,7 @@ const LoginContainer: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
-      }
-
-      // Extract the Authorization token from the response header
-      const token = response.headers.get("Authorization")
-      
-      if (token) {
-        localStorage.setItem('authToken', token); 
-        navigate('/dashboard'); 
-
-         // Save token to localStorage
-      } else {
-        throw new Error('Token not found in response headers');
+        throw new Error(data.message || 'Registration failed');
       }
 
       // Reset form and states
@@ -81,42 +63,51 @@ const LoginContainer: React.FC = () => {
       setLoading(false);
       setError('');
 
-      // Redirect to profile page after successful login
-      navigate('/dashboard'); 
+      // Redirect to login page after successful registration
+      navigate('/'); 
     } catch (err: any) {
       // Handle errors from the API
       setError(err.message || 'Something went wrong');
       setLoading(false);
     }
   };
-  const handleRegisterClick = () => {
-    navigate('/register'); // Navigate to the register page (you can adjust the route as needed)
-  };
 
   return (
-<div className="login-container">
-  <h2>Login</h2>
-  <LoginComponent
-    formData={formData}
-    handleChange={handleChange}
-    handleSubmit={handleSubmit}
-    error={error}
-    loading={loading}
-  />
-  
-  <div className="buttons-container">
+    <div className="register-container">
+      <h2>Register</h2>
+      <form onSubmit={handleSubmit} className="register-form">
+        <div className="form-group">
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        
+        {error && <div className="error">{error}</div>}
 
-    <button 
-      type="button" 
-      onClick={handleRegisterClick} 
-      className="register-button"
-    >
-      Register
-    </button>
-  </div>
-</div>
-
+        <button type="submit" disabled={loading}>
+          {loading ? 'Registering...' : 'Register'}
+        </button>
+      </form>
+    </div>
   );
 };
 
-export default LoginContainer;
+export default Register;

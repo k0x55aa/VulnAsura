@@ -6,7 +6,10 @@ import LoginContainer from '../components/LoginContainer'; // Your login compone
 import Profile from '../components/Profile';  // The Profile component
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import "../styles/login.css"
+import "../styles/login.css";
+import Register from '@/components/Register';
+import "../styles/register.css"
+import Dashboard from '@/components/Dashboard';
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -16,7 +19,9 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<LoginContainer />} />
           <Route path="/profile" element={<Profile />} />
-        </Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
       </div>
       
       <Footer /> {/* Add the footer */}

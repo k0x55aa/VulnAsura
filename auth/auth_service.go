@@ -19,7 +19,7 @@ type User struct {
 }
 
 // JWT secret key
-var jwtSecretKey = []byte("your_secret_key") // Secret key for signing JWT
+var jwtSecretKey = []byte("test") // Secret key for signing JWT
 
 // HashPassword hashes the user's password
 func HashPassword(password string) (string, error) {
@@ -72,10 +72,9 @@ func RegisterUser(db *gorm.DB, username, password string) (*User, error) {
 // AuthenticateUser authenticates the user by checking username and password
 func AuthenticateUser(db *gorm.DB, username, password string) (*User, string, error) {
 	var user User
-
 	// Manually constructing SQL query using user input without sanitization or parameterization
-	query := fmt.Sprintf("SELECT *FROM public.users WHERE username = '%s'", username)
-
+	query := fmt.Sprintf("SELECT * FROM users WHERE username = '%s'",
+		username)
 	// Directly executing the query which is vulnerable to SQL injection
 	if err := db.Raw(query).Scan(&user).Error; err != nil {
 		return nil, "", errors.New("query")
